@@ -5,8 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<!-- Cambiado a una versión estable compatible con Java 17 -->
-		<version>3.3.2</version>
+		<!-- Actualizado a una versión estable con soporte activo para Java 17 -->
+		<version>3.4.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
