@@ -1,4 +1,4 @@
-package com.example.API.de.Mesa.de.Ayuda.model.enums;
+package com.helpdesk.api.entity;
 
 public enum EstadoTicket {
     ABIERTO,

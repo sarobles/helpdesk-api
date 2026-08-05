@@ -1,13 +1,13 @@
-package com.example.API.de.Mesa.de.Ayuda;
+package com.helpdesk.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiDeMesaDeAyudaApplication {
+public class HelpdeskApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApiDeMesaDeAyudaApplication.class, args);
+		SpringApplication.run(HelpdeskApiApplication.class, args);
 	}
 
 }
