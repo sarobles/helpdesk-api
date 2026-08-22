@@ -3,17 +3,20 @@ package com.helpdesk.api.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Configuracion de seguridad TEMPORAL.
+ * Configuracion de seguridad.
  * <p>
- * Objetivo actual: desbloquear la consola de H2 durante el desarrollo,
- * mientras aun no existe autenticacion JWT.
+ * Rutas publicas: registro, login, ping, consola H2 (solo desarrollo).
+ * Cualquier otra ruta exige autenticacion.
  * <p>
- * En el Modulo 6 este filtro se reemplaza por la version definitiva:
- * rutas publicas (/api/auth/**), rutas protegidas por autenticacion,
- * y rutas protegidas por rol (RBAC).
+ * Aun falta: el filtro que realmente lee y valida el JWT (Modulo 7).
+ * Por ahora, "requiere autenticacion" existe como regla, pero todavia
+ * no hay ninguna forma de que una peticion la cumpla -> toda ruta
+ * protegida va a responder 401 por ahora, y eso es lo esperado.
  */
 @Configuration
 public class SecurityConfig {
@@ -26,10 +29,11 @@ public class SecurityConfig {
             // Esta linea SI se queda para siempre, no es temporal.
             .csrf(csrf -> csrf.disable())
 
-            // TEMPORAL: mientras no exista JWT, dejamos todo abierto.
-            // En el Modulo 6 esto se reemplaza por reglas por ruta y por rol.
+            // Lista de reglas por ruta, evaluadas en orden de arriba a abajo.
+            // Las especificas van primero; la regla general (anyRequest) al final.
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
+                .requestMatchers("/api/auth/**", "/api/ping", "/h2-console/**").permitAll()
+                .anyRequest().authenticated()
             )
 
             // La consola H2 se renderiza dentro de un <frame>. Por defecto
@@ -42,5 +46,12 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    // Bean reutilizable en toda la app: cifra passwords al registrar,
+    // y compara passwords al hacer login (Modulo 6).
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
