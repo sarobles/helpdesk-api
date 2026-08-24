@@ -1,5 +1,7 @@
 package com.helpdesk.api.controller;
 
+import com.helpdesk.api.dto.LoginRequest;
+import com.helpdesk.api.dto.LoginResponse;
 import com.helpdesk.api.dto.RegistroRequest;
 import com.helpdesk.api.dto.UsuarioResponse;
 import com.helpdesk.api.service.AuthService;
@@ -21,5 +23,11 @@ public class AuthController {
     public ResponseEntity<UsuarioResponse> registrar(@RequestBody RegistroRequest request) {
         UsuarioResponse response = authService.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
