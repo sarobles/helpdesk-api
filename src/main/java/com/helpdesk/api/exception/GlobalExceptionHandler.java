@@ -2,10 +2,13 @@ package com.helpdesk.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,6 +41,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccesoDenegadoTicketException.class)
     public ResponseEntity<ErrorResponse> handleAccesoDenegado(AccesoDenegadoTicketException ex) {
         return construir(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidacion(MethodArgumentNotValidException ex) {
+        String mensaje = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining("; "));
+        return construir(HttpStatus.BAD_REQUEST, mensaje);
     }
 
     private ResponseEntity<ErrorResponse> construir(HttpStatus status, String mensaje) {

@@ -27,7 +27,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/registro", "/api/auth/login", "/api/auth/refresh",
                                   "/api/ping", "/h2-console/**").permitAll()
 
-                // Especificas primero (orden importa)
                 .requestMatchers(HttpMethod.GET, "/api/tickets/vencidos").hasAnyRole("SOPORTE", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/tickets/mios").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/api/tickets/*/estado").hasAnyRole("SOPORTE", "ADMIN")
@@ -38,6 +37,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/admin/soporte").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
+            )
+            // Distingue explicitamente: sin autenticar -> 401, autenticado sin rol -> 403
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) ->
+                        response.sendError(401, "No autenticado"))
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                        response.sendError(403, "Acceso denegado"))
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

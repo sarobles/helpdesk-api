@@ -2,6 +2,7 @@ package com.helpdesk.api.controller;
 
 import com.helpdesk.api.dto.*;
 import com.helpdesk.api.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<UsuarioResponse> registrar(@RequestBody RegistroRequest request) {
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody RegistroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.registrar(request));
     }
 
