@@ -1,9 +1,6 @@
 package com.helpdesk.api.controller;
 
-import com.helpdesk.api.dto.LoginRequest;
-import com.helpdesk.api.dto.LoginResponse;
-import com.helpdesk.api.dto.RegistroRequest;
-import com.helpdesk.api.dto.UsuarioResponse;
+import com.helpdesk.api.dto.*;
 import com.helpdesk.api.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +18,22 @@ public class AuthController {
 
     @PostMapping("/registro")
     public ResponseEntity<UsuarioResponse> registrar(@RequestBody RegistroRequest request) {
-        UsuarioResponse response = authService.registrar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.registrar(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse response = authService.login(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(authService.refrescarAccessToken(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody RefreshRequest request) {
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
     }
 }

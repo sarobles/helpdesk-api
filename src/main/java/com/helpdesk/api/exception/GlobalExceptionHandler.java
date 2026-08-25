@@ -12,21 +12,36 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailYaRegistradoException.class)
     public ResponseEntity<ErrorResponse> handleEmailYaRegistrado(EmailYaRegistradoException ex) {
-        ErrorResponse body = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.CONFLICT.value(),
-                ex.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return construir(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(CredencialesInvalidasException.class)
     public ResponseEntity<ErrorResponse> handleCredencialesInvalidas(CredencialesInvalidasException ex) {
-        ErrorResponse body = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+        return construir(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(RefreshTokenInvalidoException.class)
+    public ResponseEntity<ErrorResponse> handleRefreshTokenInvalido(RefreshTokenInvalidoException ex) {
+        return construir(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(TicketNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleTicketNoEncontrado(TicketNoEncontradoException ex) {
+        return construir(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
+        return construir(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccesoDenegadoTicketException.class)
+    public ResponseEntity<ErrorResponse> handleAccesoDenegado(AccesoDenegadoTicketException ex) {
+        return construir(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> construir(HttpStatus status, String mensaje) {
+        ErrorResponse body = new ErrorResponse(LocalDateTime.now(), status.value(), mensaje);
+        return ResponseEntity.status(status).body(body);
     }
 }
